@@ -1,2 +1,3 @@
-# caddyshack
-The core caddyshack code
+# Caddyshack
+
+## How to put it all together
