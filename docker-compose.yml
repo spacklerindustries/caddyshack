@@ -15,37 +15,36 @@ services:
       - "8081:8080/tcp"
     restart: always
     volumes:
-			- ./bakery:/app/bakery
+      - ./bakery:/app/bakery
     environment:
       - NFS_ADDRESS=10.1.1.1
       - GK_SERVER=10.1.1.1
       - GK_TOKEN=d42a152bff711f187479d8613ccb47925d82b21a
-	spackler:
-		image: spacklerind/spackler
-		container_name: spackler
-		ports:
-			- "8085:8080/tcp"
-		restart: always
-		devices:
-			- "/dev/ttyS0:/dev/ttyS0"
-		environment:
-      - GK_TOKEN=d42a152bff711f187479d8613ccb47925d82b21a
-			- GK_SERVER="http://10.1.1.1:8080"
-	loomis:
-		image: spacklerind/loomis
-		container_name: loomis
-		ports:
-			- "8090:8080/tcp"
-			- "8091:8081/tcp"
-		restart: always
-		volumes:
-			- ./loomis:/app/loomis/config
-			- /dev:/dev
-		privileged: true
+  spackler:
+    image: spacklerind/spackler
+    container_name: spackler
+    ports:
+      - "8085:8080/tcp"
+    restart: always
+    devices:
+      - "/dev/ttyS0:/dev/ttyS0"
     environment:
-			- DOCKER_HTT_PORT="8090"
-			- DOCKER_CONSOLES_PORT="8091"
       - GK_TOKEN=d42a152bff711f187479d8613ccb47925d82b21a
       - GK_SERVER="http://10.1.1.1:8080"
-			- LOOMIS_SERVER="http://10.1.1.1"
-
+  loomis:
+    image: spacklerind/loomis
+    container_name: loomis
+    ports:
+      - "8090:8080/tcp"
+      - "8091:8081/tcp"
+    restart: always
+    volumes:
+      - ./loomis:/app/loomis/config
+      - /dev:/dev
+    privileged: true
+    environment:
+      - DOCKER_HTT_PORT="8090"
+      - DOCKER_CONSOLES_PORT="8091"
+      - GK_TOKEN=d42a152bff711f187479d8613ccb47925d82b21a
+      - GK_SERVER="http://10.1.1.1:8080"
+      - LOOMIS_SERVER="http://10.1.1.1"
