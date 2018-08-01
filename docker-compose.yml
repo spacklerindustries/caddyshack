@@ -19,7 +19,7 @@ services:
     restart: always
     network_mode: "host"
     volumes:
-      - ./hooktftp:/etc/hooktftp
+      - ./dnsmasq:/app/
   bushwood:
     image: spacklerind/bushwood
     container_name: bushwood
@@ -28,29 +28,42 @@ services:
     restart: always
     volumes:
       - ./bushwood:/app/caddyshack
+    environment:
+      - BAKERY_SERVER=http://10.1.1.2:8081
+      - HTTP_PORT=8080
+      - JWT_SECRET=raspberrypi
+      - DB_PATH=/app/caddyshack/caddyshack.db
+      - SPACKLER_SERVER=http://10.1.1.1:8585
+      - LOOMIS_SERVER=http://10.1.1.1:8090
   bakery:
     image: spacklerind/bakery
     container_name: bakery
     ports:
       - "8081:8080/tcp"
+      - "111:111"
+      - "2049:2049"
+      - "111:111/udp"
+      - "2049:2049/udp"
     restart: always
     volumes:
       - ./bakery:/app/bakery
     environment:
-      - NFS_ADDRESS=10.1.1.1
-      - GK_SERVER=10.1.1.1
-      - GK_TOKEN=d42a152bff711f187479d8613ccb47925d82b21a
+      - BAKERY_ADDRESS=10.1.1.2
+      - HTTP_PORT=8081
+      - BUSHWOOD_SERVER=http://10.1.1.1:8080
+      - BUSHWOOD_TOKEN=d42a152bff711f187479d8613ccb47925d82b21a
+      - TEMPLATE_PATH=/go/src/bakery/fileTemplates
  spackler:
     image: spacklerind/spackler
     container_name: spackler
     ports:
-      - "8085:8080/tcp"
+      - "8585:8080/tcp"
     restart: always
     devices:
       - "/dev/ttyS0:/dev/ttyS0"
     environment:
-      - GK_TOKEN=d42a152bff711f187479d8613ccb47925d82b21a
-      - GK_SERVER=http://10.1.1.1:8080
+      - BUSHWOOD_TOKEN=d42a152bff711f187479d8613ccb47925d82b21a
+      - BUSHWOOD_SERVER=http://10.1.1.1:8080
       - SERIAL_DEVICE=/dev/ttyS0
   loomis:
     image: spacklerind/loomis
@@ -65,7 +78,7 @@ services:
     privileged: true
     environment:
       - DOCKER_HTT_PORT=8090
-      - DOCKER_CONSOLES_PORT="8091
-      - GK_TOKEN=d42a152bff711f187479d8613ccb47925d82b21a
-      - GK_SERVER=http://10.1.1.1:8080
-      - LOOMIS_SERVER=http://10.1.1.1
+      - DOCKER_CONSOLES_PORT=8091
+      - BUSHWOOD_TOKEN=d42a152bff711f187479d8613ccb47925d82b21a
+      - BUSHWOOD_SERVER=http://10.1.1.1:8080
+      - LOOMIS_ADDRESS=10.1.1.1
