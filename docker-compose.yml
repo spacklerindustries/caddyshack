@@ -9,6 +9,9 @@ services:
     restart: always
     volumes:
       - ./hooktftp:/etc/hooktftp
+    logging:
+      options:
+        max-size: 50m
   dnsmasq:
     image: spacklerind/dnsmasq
     cap_add:
@@ -20,6 +23,9 @@ services:
     network_mode: "host"
     volumes:
       - ./dnsmasq:/app/
+    logging:
+      options:
+        max-size: 50m
   bushwood:
     image: spacklerind/bushwood
     container_name: bushwood
@@ -35,6 +41,9 @@ services:
       - DB_PATH=/app/caddyshack/caddyshack.db
       - SPACKLER_SERVER=http://10.1.1.1:8585
       - LOOMIS_SERVER=http://10.1.1.1:8090
+    logging:
+      options:
+        max-size: 50m
   bakery:
     image: spacklerind/bakery
     container_name: bakery
@@ -53,6 +62,9 @@ services:
       - BUSHWOOD_SERVER=http://10.1.1.1:8080
       - BUSHWOOD_TOKEN=d42a152bff711f187479d8613ccb47925d82b21a
       - TEMPLATE_PATH=/go/src/bakery/fileTemplates
+    logging:
+      options:
+        max-size: 50m
  spackler:
     image: spacklerind/spackler
     container_name: spackler
@@ -65,6 +77,9 @@ services:
       - BUSHWOOD_TOKEN=d42a152bff711f187479d8613ccb47925d82b21a
       - BUSHWOOD_SERVER=http://10.1.1.1:8080
       - SERIAL_DEVICE=/dev/ttyS0
+    logging:
+      options:
+        max-size: 50m
   loomis:
     image: spacklerind/loomis
     container_name: loomis
@@ -82,3 +97,6 @@ services:
       - BUSHWOOD_TOKEN=d42a152bff711f187479d8613ccb47925d82b21a
       - BUSHWOOD_SERVER=http://10.1.1.1:8080
       - LOOMIS_ADDRESS=10.1.1.1
+    logging:
+      options:
+        max-size: 50m
